@@ -12495,7 +12495,7 @@ It is a ratio of true positives(words classified as spam, and which are actually
 <span class="sd">FN = 0 # No predicted negatives in the naive case</span>
 <span class="sd">&#39;&#39;&#39;</span>
 <span class="n">TP</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">income</span><span class="p">)</span>
-<span class="n">FP</span> <span class="o">=</span> <span class="n">income</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<span class="n">FP</span> <span class="o">=</span> <span class="n">income</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">-</span> <span class="n">TP</span>
 
 <span class="c1"># TODO: Calculate accuracy, precision and recall</span>
 <span class="n">accuracy</span> <span class="o">=</span> <span class="n">TP</span> <span class="o">/</span> <span class="p">(</span><span class="n">TP</span> <span class="o">+</span> <span class="n">FP</span><span class="p">)</span>
@@ -12524,7 +12524,7 @@ It is a ratio of true positives(words classified as spam, and which are actually
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Naive Predictor: [Accuracy score: 0.1986, F-score: 0.2365]
+<pre>Naive Predictor: [Accuracy score: 0.2478, F-score: 0.2917]
 </pre>
 </div>
 </div>
@@ -12592,7 +12592,7 @@ It is a ratio of true positives(words classified as spam, and which are actually
 <li>Real-world application: This is ensemble method and it's application is possible to almost any problem, because one can use any algorithm as base estimator e.g. image recognition.</li>
 <li>Strengths: easy to implement, resistent to overfitting [2.1], does not have many parameters to tune, so it is easy to use (of course, this depends on estimator chosen)</li>
 <li>Weaknesses: in some cases it can not decrease generalization error even running more rounds, this is because of weak classifiers used [2.1] (chapter 3). If weak learners condition is held then AdaBoost is sensitive to outliers and noise ([2.1] chapter 6).</li>
-<li>Why it is good candidate: finding donors is a classification problem, where based on sequence of if-statements it's possible to predict income class, which is the case for decision tree as estimator.</li>
+<li>Why it is good candidate: I expect that data has noise and outliers, because nature of the data is obsering of a person income, and it's possible that a person has good salary but some times losing money in casino, so called "human factor". AdaBoost may perform well on data with noise and outliers if weak learners are from class of functions which are "sufficiently rich" (see [2.1] chapter 6), e.g. DecisionTree. The data set has many categorical features which may be a reason of bad perfromance for many algorithms, but it's possible to use weak learner which performs good on categrorical features like DecisionTree. AdaBoost algorithmic complexity depends on weak learner complexity, so it's possible to choose a good model for large scale data.</li>
 <li>Links:<ul>
 <li>2.1 [<a href="http://rob.schapire.net/papers/explaining-adaboost.pdf">http://rob.schapire.net/papers/explaining-adaboost.pdf</a>]</li>
 </ul>
@@ -12892,9 +12892,9 @@ Model chosen is AdaBoost.</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer: </strong> <br/>
-AdaBoost is ensemble method, this means it uses ensemble of simple (or weak) classifiers. It is iterative method, each step additional weak classifier is used, it classifies data and gets a number of misclassified data points. On the next step AdaBoost increases importance of misclassified data points and runs next round of classification with another weak classifier which pays more attention on the important data points. Then it uses all weak classifiers results, combine them and this way gets "smarter" classifier.<br/>
+AdaBoost is ensemble method, this means it uses ensemble of simple (or weak) classifiers, where each weak classifier is actually a model trained against  "boosted" data points, in other words each next weak classifier becomes an "expert" on specific data points. The important restriction of a weak hypothesis (or weak learner) is that it should have performance at least slightly better than random chance. It is iterative method, each step additional weak classifier is used, it classifies data and gets a number of misclassified data points. On each next step AdaBoost increases importance of misclassified data points and runs next round of classification with another weak classifier which pays more attention on the important (misclassified) data points. Then it uses all weak classifiers results, combines them and this way gets "smarter" classifier, with improved predictive power.<br/>
 It happens that it is hard to overfit it, with more iterations it may result the same metrics but it becomes more confident in it's decisions.<br/>
-A big plus of AdaBoost is that it's possible to use different weak classifier types as a weak classifiers, e.g. GaussianNB, DecisionTree, SVC, etc.</p>
+A big plus of AdaBoost is that it's possible to use different model as a weak classifier, e.g. GaussianNB, DecisionTree, SVC, etc.</p>
 
 </div>
 </div>
@@ -13064,7 +13064,7 @@ Final F-score on the testing data: 0.7316
 <p><strong>Answer: </strong><br/>
 The results of the optimized model a bit more better then unoptimized. They differs slightly because AdaBoost goes to it's best result quickly, it may take 5-10 iterations, and then it improves it's confidence (from margin theory).
 <br/>
-Naive Predictor: [Accuracy score: 0.1986, F-score: 0.2365]
+Naive Predictor: [Accuracy score: 0.2478, F-score: 0.2917]
 <br/>
 Comparing to the Naive predictor the results are more better in all measured metrics.</p>
 
